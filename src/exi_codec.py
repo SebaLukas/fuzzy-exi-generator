@@ -5,6 +5,7 @@ import logging
 from builtins import Exception
 import json
 from base64 import b64encode
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -33,11 +34,14 @@ class ExiJarCodec:
             cls._instance.exi_codec = None
         return cls._instance
 
-    def set_exi_codec(self, jar_file_path: str):
+    def set_exi_codec(self, jar_file_path: Path):
         from py4j.java_gateway import JavaGateway
 
+        if not jar_file_path.exists() or not jar_file_path.is_file():
+            raise Exception(f'Exi codec jar file {jar_file_path.resolve()} does not exist')
+
         self.gateway = JavaGateway.launch_gateway(
-            classpath=jar_file_path,
+            classpath=str(jar_file_path.absolute()),
             die_on_exit=True,
             javaopts=["--add-opens", "java.base/java.lang=ALL-UNNAMED"],
         )
