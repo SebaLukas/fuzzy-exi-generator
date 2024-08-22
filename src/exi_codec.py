@@ -3,8 +3,24 @@
 
 import logging
 from builtins import Exception
+import json
+from base64 import b64encode
 
 logger = logging.getLogger(__name__)
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+    """
+    Custom JSON encoder to allow the encoding of raw bytes to Base64 encoded
+    strings to conform with their XSD type base64Binary. Also, JSON cannot
+    encode bytes by default, so the base64Binary type comes in handy.
+    """
+
+    # pylint: disable=method-hidden
+    def default(self, o):
+        if isinstance(o, bytes):
+            return b64encode(o).decode()
+        return json.JSONEncoder.default(self, o)
 
 
 class ExiJarCodec:

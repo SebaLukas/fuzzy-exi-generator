@@ -2,12 +2,11 @@
 # Copyright 2024 Pionix GmbH and Contributors to EVerest
 
 import json
-from base64 import b64encode
 from pathlib import Path
 
 import pandas as pd
 
-from exi_codec import ExiJarCodec
+from exi_codec import CustomJSONEncoder, ExiJarCodec
 
 from config import output_dir
 
@@ -16,20 +15,6 @@ from iso15118.shared.messages import BaseModel
 from iso15118.shared.messages.app_protocol import SupportedAppProtocolReq, SupportedAppProtocolRes
 
 from polyfactory.factories.pydantic_factory import ModelFactory
-
-
-class CustomJSONEncoder(json.JSONEncoder):
-    """
-    Custom JSON encoder to allow the encoding of raw bytes to Base64 encoded
-    strings to conform with their XSD type base64Binary. Also, JSON cannot
-    encode bytes by default, so the base64Binary type comes in handy.
-    """
-
-    # pylint: disable=method-hidden
-    def default(self, o):
-        if isinstance(o, bytes):
-            return b64encode(o).decode()
-        return json.JSONEncoder.default(self, o)
 
 
 class SupportedAppProtocolReqFactory(ModelFactory[SupportedAppProtocolReq]):
