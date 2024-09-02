@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from progress.bar import Bar
+
 from exi_codec import CustomJSONEncoder, ExiJarCodec
 
 from config import output_dir
@@ -30,7 +32,6 @@ def convert_msg_to_dict(msg_element: BaseModel) -> dict:
     return {str(msg_element): msg_to_dct}
 
 
-# Better return tuple with Exi bytes and json
 class GeneratorSupportedAppProtocol:
     def __generate_req(self) -> tuple[bytes, dict]:
         req_dict = convert_msg_to_dict(SupportedAppProtocolReqFactory.build())
@@ -51,12 +52,15 @@ class GeneratorSupportedAppProtocol:
         bytes_list = []
         json_list = []
 
-        for _ in range(0, no_of_messages):
-            req = self.__generate_req()
-            res = self.__generate_res()
+        with Bar('Generate Supported App Protocol messages', max=no_of_messages) as bar:
+            for _ in range(0, no_of_messages):
+                req = self.__generate_req()
+                res = self.__generate_res()
 
-            bytes_list.extend([req[0].hex(), res[0].hex()])
-            json_list.extend([req[1], res[1]])
+                bytes_list.extend([req[0].hex(), res[0].hex()])
+                json_list.extend([req[1], res[1]])
+
+                bar.next()
 
         df = pd.DataFrame(
             {

@@ -2,3 +2,4 @@ pydantic==1.*
 py4j>=0.10.9.5
 polyfactory>=2.16
 pandas>=2.*
+progress>=1.6
