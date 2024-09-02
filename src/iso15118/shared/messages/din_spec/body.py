@@ -125,7 +125,7 @@ class SessionSetupRes(Response):
     """
 
     evse_id: str = Field(..., min_length=2, max_length=32, alias="EVSEID")
-    datetime_now: int = Field(None, alias="DateTimeNow")
+    datetime_now: Optional[int] = Field(None, alias="DateTimeNow")
 
 
 class ServiceDiscoveryReq(BodyBase):
@@ -136,7 +136,7 @@ class ServiceDiscoveryReq(BodyBase):
     it shall always contain the value "EVCharging"
     """
 
-    service_scope: str = Field(None, max_length=32, alias="ServiceScope")
+    service_scope: Optional[str] = Field(None, max_length=32, alias="ServiceScope")
     service_category: ServiceCategory = Field(None, alias="ServiceCategory")
 
 
@@ -149,7 +149,7 @@ class ServiceDiscoveryRes(Response):
 
     auth_option_list: AuthOptionList = Field(..., alias="PaymentOptions")
     charge_service: ChargeService = Field(..., alias="ChargeService")
-    service_list: ServiceList = Field(None, alias="ServiceList")
+    service_list: Optional[ServiceList] = Field(None, alias="ServiceList")
 
 
 class ServicePaymentSelectionReq(BodyBase):
@@ -172,8 +172,8 @@ class ContractAuthenticationReq(BodyBase):
 
     # In the scope of DIN SPEC 70121, the element “GenChallenge” shall not be used.
     # In the scope of DIN SPEC 70121, the element “Id” shall not be used.
-    gen_challenge: str = Field(None, alias="GenChallenge")
-    id: str = Field(None, alias="Id")
+    gen_challenge: Optional[str] = Field(None, alias="GenChallenge")
+    id: Optional[str] = Field(None, alias="Id")
 
 
 class ContractAuthenticationRes(Response):
@@ -184,7 +184,7 @@ class ContractAuthenticationRes(Response):
     the EVSE is still processing at the time the response message was sent.
     """
 
-    evse_processing: EVSEProcessing = Field(None, alias="EVSEProcessing")
+    evse_processing: Optional[EVSEProcessing] = Field(None, alias="EVSEProcessing")
 
 
 class ChargeParameterDiscoveryReq(BodyBase):
@@ -201,9 +201,10 @@ class ChargeParameterDiscoveryReq(BodyBase):
     In the scope of DIN SPEC 70121, the element “AC_EVChargeParameter”
     shall not be used.
     """
-    ac_ev_charge_parameter: ACEVChargeParameter = Field(
-        None, alias="AC_EVChargeParameter"
-    )
+    # TODO(sl): Check if ac needed
+    # ac_ev_charge_parameter: ACEVChargeParameter = Field(
+    #     None, alias="AC_EVChargeParameter"
+    # )
     """
     In the scope of DIN SPEC 70121, the EVSE shall provide its
     maximum output power limit in the element “EVSEMaximumPowerLimit”
@@ -273,14 +274,15 @@ class ChargeParameterDiscoveryRes(Response):
     """See section 9.4.1.6.3 in DIN SPEC 70121"""
 
     evse_processing: EVSEProcessing = Field(..., alias="EVSEProcessing")
-    sa_schedule_list: SAScheduleList = Field(None, alias="SAScheduleList")
+    sa_schedule_list: Optional[SAScheduleList] = Field(None, alias="SAScheduleList")
     """
     In the scope of DIN SPEC 70121, the element “AC_EVSEChargeParameter”
     shall not be used.
     """
-    ac_charge_parameter: ACEVSEChargeParameter = Field(
-        None, alias="AC_EVSEChargeParameter"
-    )
+    # TODO(sl): Check if ac needed
+    # ac_charge_parameter: ACEVSEChargeParameter = Field(
+    #     None, alias="AC_EVSEChargeParameter"
+    # )
     dc_charge_parameter: DCEVSEChargeParameter = Field(
         None, alias="DC_EVSEChargeParameter"
     )
@@ -332,7 +334,7 @@ class PowerDeliveryReq(BodyBase):
     """See section 9.4.1.7.2 in DIN SPEC 70121"""
 
     ready_to_charge: bool = Field(..., alias="ReadyToChargeState")
-    charging_profile: ChargingProfile = Field(None, alias="ChargingProfile")
+    charging_profile: Optional[ChargingProfile] = Field(None, alias="ChargingProfile")
     dc_ev_power_delivery_parameter: DCEVPowerDeliveryParameter = Field(
         None, alias="DC_EVPowerDeliveryParameter"
     )
@@ -342,7 +344,8 @@ class PowerDeliveryRes(Response):
     """See section 9.4.1.7.3 in DIN SPEC 70121"""
 
     """ In the scope of DIN SPEC 70121, AC_EVSEStatus shall not be used. """
-    ac_evse_status: ACEVSEStatus = Field(None, alias="AC_EVSEStatus")
+    # TODO(sl): Check if ac needed
+    # ac_evse_status: ACEVSEStatus = Field(None, alias="AC_EVSEStatus")
     dc_evse_status: DCEVSEStatus = Field(..., alias="DC_EVSEStatus")
 
     # TODO Reactivate the validator once you figured out how to deal with the
@@ -411,19 +414,19 @@ class CurrentDemandReq(BodyBase):
 
     dc_ev_status: DCEVStatus = Field(..., alias="DC_EVStatus")
     ev_target_current: PVEVTargetCurrentDin = Field(..., alias="EVTargetCurrent")
-    ev_max_voltage_limit: PVEVMaxVoltageLimitDin = Field(
+    ev_max_voltage_limit: Optional[PVEVMaxVoltageLimitDin] = Field(
         None, alias="EVMaximumVoltageLimit"
     )
-    ev_max_current_limit: PVEVMaxCurrentLimitDin = Field(
+    ev_max_current_limit: Optional[PVEVMaxCurrentLimitDin] = Field(
         None, alias="EVMaximumCurrentLimit"
     )
-    ev_max_power_limit: PVEVMaxPowerLimitDin = Field(None, alias="EVMaximumPowerLimit")
-    bulk_charging_complete: bool = Field(None, alias="BulkChargingComplete")
+    ev_max_power_limit: Optional[PVEVMaxPowerLimitDin] = Field(None, alias="EVMaximumPowerLimit")
+    bulk_charging_complete: Optional[bool] = Field(None, alias="BulkChargingComplete")
     charging_complete: bool = Field(..., alias="ChargingComplete")
-    remaining_time_to_full_soc: PVRemainingTimeToFullSOCDin = Field(
+    remaining_time_to_full_soc: Optional[PVRemainingTimeToFullSOCDin] = Field(
         None, alias="RemainingTimeToFullSoC"
     )
-    remaining_time_to_bulk_soc: PVRemainingTimeToBulkSOCDin = Field(
+    remaining_time_to_bulk_soc: Optional[PVRemainingTimeToBulkSOCDin] = Field(
         None, alias="RemainingTimeToBulkSoC"
     )
     ev_target_voltage: PVEVTargetVoltageDin = Field(..., alias="EVTargetVoltage")
@@ -442,13 +445,13 @@ class CurrentDemandRes(Response):
     evse_current_limit_achieved: bool = Field(..., alias="EVSECurrentLimitAchieved")
     evse_voltage_limit_achieved: bool = Field(..., alias="EVSEVoltageLimitAchieved")
     evse_power_limit_achieved: bool = Field(..., alias="EVSEPowerLimitAchieved")
-    evse_max_voltage_limit: PVEVSEMaxVoltageLimitDin = Field(
+    evse_max_voltage_limit: Optional[PVEVSEMaxVoltageLimitDin] = Field(
         None, alias="EVSEMaximumVoltageLimit"
     )
-    evse_max_current_limit: PVEVSEMaxCurrentLimitDin = Field(
+    evse_max_current_limit: Optional[PVEVSEMaxCurrentLimitDin] = Field(
         None, alias="EVSEMaximumCurrentLimit"
     )
-    evse_max_power_limit: PVEVSEMaxPowerLimitDin = Field(
+    evse_max_power_limit: Optional[PVEVSEMaxPowerLimitDin] = Field(
         None, alias="EVSEMaximumPowerLimit"
     )
 

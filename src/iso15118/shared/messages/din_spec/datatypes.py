@@ -12,7 +12,7 @@ element names by using the 'alias' attribute.
 """
 
 from enum import Enum, IntEnum
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field, conbytes, root_validator
 
@@ -87,9 +87,9 @@ class ServiceDetails(BaseModel):
 
     # XSD type unsignedShort (16 bit integer) with value range [0..65535]
     service_id: ServiceID = Field(..., ge=0, le=65535, alias="ServiceID")
-    service_name: ServiceName = Field(None, max_length=32, alias="ServiceName")
+    service_name: Optional[ServiceName] = Field(None, max_length=32, alias="ServiceName")
     service_category: ServiceCategory = Field(..., alias="ServiceCategory")
-    service_scope: str = Field(None, max_length=64, alias="ServiceScope")
+    service_scope: Optional[str] = Field(None, max_length=64, alias="ServiceScope")
 
 
 class ChargeService(BaseModel):
@@ -234,7 +234,7 @@ class RelativeTimeInterval(BaseModel):
     """See section 9.5.2.12 in DIN SPEC 70121"""
 
     start: int = Field(..., ge=0, le=16777214, alias="start")
-    duration: int = Field(None, ge=0, le=86400, alias="duration")
+    duration: Optional[int] = Field(None, ge=0, le=86400, alias="duration")
 
 
 class PMaxScheduleEntryDetails(BaseModel):
@@ -277,7 +277,7 @@ class SAScheduleTupleEntry(BaseModel):
     # XSD type unsignedByte with value range [1..255]
     sa_schedule_tuple_id: int = Field(..., ge=1, le=255, alias="SAScheduleTupleID")
     p_max_schedule: PMaxScheduleEntry = Field(..., alias="PMaxSchedule")
-    sales_tariff: SalesTariff = Field(None, alias="SalesTariff")
+    sales_tariff: Optional[SalesTariff] = Field(None, alias="SalesTariff")
 
 
 class SAScheduleList(BaseModel):
@@ -338,8 +338,8 @@ class DCEVStatus(BaseModel):
     However, they may be used for customer information.
     """
     ev_ready: bool = Field(..., alias="EVReady")
-    ev_cabin_conditioning: bool = Field(None, alias="EVCabinConditioning")
-    ev_ress_conditioning: bool = Field(None, alias="EVRESSConditioning")
+    ev_cabin_conditioning: Optional[bool] = Field(None, alias="EVCabinConditioning")
+    ev_ress_conditioning: Optional[bool] = Field(None, alias="EVRESSConditioning")
     ev_error_code: DCEVErrorCode = Field(..., alias="EVErrorCode")
     # XSD type byte with value range [0..100]
     ev_ress_soc: int = Field(..., ge=0, le=100, alias="EVRESSSOC")
@@ -360,18 +360,18 @@ class DCEVChargeParameter(EVChargeParameter):
     is contained in the message ChargeParameterDiscoveryReq, this allows the
     EVSE to compute suitable PMaxSchedules.
      """
-    ev_maximum_power_limit: PVEVMaxPowerLimitDin = Field(
+    ev_maximum_power_limit: Optional[PVEVMaxPowerLimitDin] = Field(
         None, alias="EVMaximumPowerLimit"
     )
     ev_maximum_voltage_limit: PVEVMaxVoltageLimitDin = Field(
         ..., alias="EVMaximumVoltageLimit"
     )
-    ev_energy_capacity: PVEVEnergyCapacityDin = Field(None, alias="EVEnergyCapacity")
-    ev_energy_request: PVEVEnergyRequestDin = Field(None, alias="EVEnergyRequest")
+    ev_energy_capacity: Optional[PVEVEnergyCapacityDin] = Field(None, alias="EVEnergyCapacity")
+    ev_energy_request: Optional[PVEVEnergyRequestDin] = Field(None, alias="EVEnergyRequest")
     # XSD type byte with value range [0..100]
-    full_soc: int = Field(None, ge=0, le=100, alias="FullSOC")
+    full_soc: Optional[int] = Field(None, ge=0, le=100, alias="FullSOC")
     # XSD type byte with value range [0..100]
-    bulk_soc: int = Field(None, ge=0, le=100, alias="BulkSOC")
+    bulk_soc: Optional[int] = Field(None, ge=0, le=100, alias="BulkSOC")
 
 
 class DCEVPowerDeliveryParameter(BaseModel):
@@ -380,7 +380,7 @@ class DCEVPowerDeliveryParameter(BaseModel):
     """
 
     dc_ev_status: DCEVStatus = Field(..., alias="DC_EVStatus")
-    bulk_charging_complete: bool = Field(None, alias="BulkChargingComplete")
+    bulk_charging_complete: Optional[bool] = Field(None, alias="BulkChargingComplete")
     charging_complete: bool = Field(..., alias="ChargingComplete")
 
 
@@ -408,7 +408,7 @@ class Notification(BaseModel):
     """See xml schema V2G_CI_MsgDataTypes.xsd (PAGE )"""
 
     fault_code: FaultCode = Field(..., alias="FaultCode")
-    fault_msg: str = Field(None, max_length=64, alias="FaultMsg")
+    fault_msg: Optional[str] = Field(None, max_length=64, alias="FaultMsg")
 
     def __str__(self):
         additional_info = f" ({self.fault_msg})" if self.fault_msg else ""

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Literal, Tuple, Union
+from typing import List, Literal, Tuple, Union, Optional
 
 from pydantic import Field, root_validator
 
@@ -586,7 +586,7 @@ class EVSEStatus(BaseModel):
 class DCEVSEStatus(EVSEStatus):
     """See section 8.5.4.1 in ISO 15118-2"""
 
-    evse_isolation_status: IsolationLevel = Field(None, alias="EVSEIsolationStatus")
+    evse_isolation_status: Optional[IsolationLevel] = Field(None, alias="EVSEIsolationStatus")
     evse_status_code: DCEVSEStatusCode = Field(..., alias="EVSEStatusCode")
 
 
@@ -630,7 +630,9 @@ class SelectedService(BaseModel):
     # XSD type unsignedShort (16 bit integer) with value range [0..65535]
     # Table 87 says short, Table 106 says unsignedShort. We go with
     # unsignedShort as it makes more sense (no negative values).
-    parameter_set_id: int = Field(None, ge=0, le=65535, alias="ParameterSetID")
+
+    # Java Exi Codec uses short, no ushort
+    parameter_set_id: int = Field(None, ge=0, le=32767, alias="ParameterSetID")
 
 
 class SelectedServiceList(BaseModel):
