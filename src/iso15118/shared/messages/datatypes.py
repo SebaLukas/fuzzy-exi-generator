@@ -632,7 +632,7 @@ class SelectedService(BaseModel):
     # unsignedShort as it makes more sense (no negative values).
 
     # Java Exi Codec uses short, no ushort
-    parameter_set_id: int = Field(None, ge=0, le=32767, alias="ParameterSetID")
+    parameter_set_id: Optional[int] = Field(None, ge=0, le=32767, alias="ParameterSetID")
 
 
 class SelectedServiceList(BaseModel):

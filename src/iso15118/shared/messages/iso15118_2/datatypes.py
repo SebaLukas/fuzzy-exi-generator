@@ -12,7 +12,7 @@ element names by using the 'alias' attribute.
 """
 
 from enum import Enum, IntEnum
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field, conbytes, constr, root_validator, validator
 from typing_extensions import TypeAlias
@@ -60,7 +60,7 @@ class EVChargeParameter(BaseModel):
     """See section 8.4.3.8.2 in ISO 15118-2"""
 
     # XSD type unsignedInt (32-bit unsigned integer) with value range
-    departure_time: int = Field(None, ge=0, le=UINT_32_MAX, alias="DepartureTime")
+    departure_time: Optional[int] = Field(None, ge=0, le=UINT_32_MAX, alias="DepartureTime")
 
 
 class ACEVChargeParameter(EVChargeParameter):
@@ -101,9 +101,9 @@ class SubCertificates(BaseModel):
 class CertificateChain(BaseModel):
     """See section 8.5.2.5 in ISO 15118-2"""
 
-    id: str = Field(None, alias="Id")
+    id: Optional[str] = Field(None, alias="Id")
     certificate: Certificate = Field(..., alias="Certificate")
-    sub_certificates: SubCertificates = Field(None, alias="SubCertificates")
+    # sub_certificates: Optional[SubCertificates] = Field(None, alias="SubCertificates")
 
     def __str__(self):
         return type(self).__name__
@@ -161,9 +161,9 @@ class ServiceDetails(BaseModel):
 
     # XSD type unsignedShort (16 bit integer) with value range [0..65535]
     service_id: ServiceID = Field(..., ge=0, le=65535, alias="ServiceID")
-    service_name: ServiceName = Field(None, max_length=32, alias="ServiceName")
+    service_name: Optional[ServiceName] = Field(None, max_length=32, alias="ServiceName")
     service_category: ServiceCategory = Field(..., alias="ServiceCategory")
-    service_scope: str = Field(None, max_length=64, alias="ServiceScope")
+    service_scope: Optional[str] = Field(None, max_length=64, alias="ServiceScope")
     free_service: bool = Field(..., alias="FreeService")
 
 
@@ -181,7 +181,7 @@ class ProfileEntryDetails(BaseModel):
     start: int = Field(..., alias="ChargingProfileEntryStart")
     max_power: PVPMax = Field(..., alias="ChargingProfileEntryMaxPower")
     # XSD type byte with value range [1..3]
-    max_phases_in_use: int = Field(
+    max_phases_in_use: Optional[int] = Field(
         None, ge=1, le=3, alias="ChargingProfileEntryMaxNumberOfPhasesInUse"
     )
 
@@ -215,7 +215,7 @@ class Cost(BaseModel):
     cost_kind: CostKind = Field(..., alias="costKind")
     amount: int = Field(..., alias="amount")
     # XSD type byte with value range [-3..3]
-    amount_multiplier: int = Field(None, ge=-3, le=3, alias="amountMultiplier")
+    amount_multiplier: Optional[int] = Field(None, ge=-3, le=3, alias="amountMultiplier")
 
 
 class ConsumptionCost(BaseModel):
@@ -258,23 +258,23 @@ class DCEVChargeParameter(EVChargeParameter):
     ev_maximum_current_limit: PVEVMaxCurrentLimit = Field(
         ..., alias="EVMaximumCurrentLimit"
     )
-    ev_maximum_power_limit: PVEVMaxPowerLimit = Field(None, alias="EVMaximumPowerLimit")
+    ev_maximum_power_limit: Optional[PVEVMaxPowerLimit] = Field(None, alias="EVMaximumPowerLimit")
     ev_maximum_voltage_limit: PVEVMaxVoltageLimit = Field(
         ..., alias="EVMaximumVoltageLimit"
     )
-    ev_energy_capacity: PVEVEnergyCapacity = Field(None, alias="EVEnergyCapacity")
-    ev_energy_request: PVEVEnergyRequest = Field(None, alias="EVEnergyRequest")
+    ev_energy_capacity: Optional[PVEVEnergyCapacity] = Field(None, alias="EVEnergyCapacity")
+    ev_energy_request: Optional[PVEVEnergyRequest] = Field(None, alias="EVEnergyRequest")
     # XSD type byte with value range [0..100]
-    full_soc: int = Field(None, ge=0, le=100, alias="FullSOC")
+    full_soc: Optional[int] = Field(None, ge=0, le=100, alias="FullSOC")
     # XSD type byte with value range [0..100]
-    bulk_soc: int = Field(None, ge=0, le=100, alias="BulkSOC")
+    bulk_soc: Optional[int] = Field(None, ge=0, le=100, alias="BulkSOC")
 
 
 class DCEVPowerDeliveryParameter(BaseModel):
     """See section 8.5.4.5 in ISO 15118-2"""
 
     dc_ev_status: DCEVStatus = Field(..., alias="DC_EVStatus")
-    bulk_charging_complete: bool = Field(None, alias="BulkChargingComplete")
+    bulk_charging_complete: Optional[bool] = Field(None, alias="BulkChargingComplete")
     charging_complete: bool = Field(..., alias="ChargingComplete")
 
 
@@ -319,22 +319,22 @@ class MeterInfo(BaseModel):
     """See section 8.5.2.27 in ISO 15118-2"""
 
     meter_id: str = Field(..., max_length=32, alias="MeterID")
-    meter_reading: int = Field(None, ge=0, le=999999999, alias="MeterReading")
-    sig_meter_reading: bytes = Field(None, max_length=64, alias="SigMeterReading")
+    meter_reading: Optional[int] = Field(None, ge=0, le=999999999, alias="MeterReading")
+    sig_meter_reading: Optional[bytes] = Field(None, max_length=64, alias="SigMeterReading")
     # XSD type short (16 bit integer) with value range [-32768..32767]
     # A status with a negative value doesn't make much sense though ...
-    meter_status: int = Field(None, ge=INT_16_MIN, le=INT_16_MAX, alias="MeterStatus")
+    meter_status: Optional[int] = Field(None, ge=INT_16_MIN, le=INT_16_MAX, alias="MeterStatus")
     # XSD type short (16 bit integer) with value range [-32768..32767].
     # However, that doesn't make any sense as TMeter is supposed to be a Unix
     # time stamp. Should be unsignedLong
-    t_meter: int = Field(None, alias="TMeter")
+    t_meter: Optional[int] = Field(None, alias="TMeter")
 
 
 class Notification(BaseModel):
     """See section 8.5.2.8 in ISO 15118-2"""
 
     fault_code: FaultCode = Field(..., alias="FaultCode")
-    fault_msg: str = Field(None, max_length=64, alias="FaultMsg")
+    fault_msg: Optional[str] = Field(None, max_length=64, alias="FaultMsg")
 
     def __str__(self):
         additional_info = f" ({self.fault_msg})" if self.fault_msg else ""
@@ -347,14 +347,14 @@ class Parameter(BaseModel):
     # 'Name' is actually an XML attribute, but JSON (our serialisation method)
     # doesn't have attributes. The EXI codec has to en-/decode accordingly.
     name: str = Field(..., alias="Name")
-    bool_value: bool = Field(None, alias="boolValue")
+    bool_value: Optional[bool] = Field(None, alias="boolValue")
     # XSD type byte with value range [-128..127]
-    byte_value: int = Field(None, ge=INT_8_MIN, le=INT_8_MAX, alias="byteValue")
+    byte_value: Optional[int] = Field(None, ge=INT_8_MIN, le=INT_8_MAX, alias="byteValue")
     # XSD type short (16 bit integer) with value range [-32768..32767]
-    short_value: int = Field(None, ge=INT_16_MIN, le=INT_16_MAX, alias="shortValue")
-    int_value: int = Field(None, alias="intValue")
-    physical_value: PhysicalValue = Field(None, alias="physicalValue")
-    str_value: str = Field(None, alias="stringValue")
+    short_value: Optional[int] = Field(None, ge=INT_16_MIN, le=INT_16_MAX, alias="shortValue")
+    int_value: Optional[int] = Field(None, alias="intValue")
+    physical_value: Optional[PhysicalValue] = Field(None, alias="physicalValue")
+    str_value: Optional[str] = Field(None, alias="stringValue")
 
     @root_validator(pre=True)
     def at_least_one_parameter_value(cls, values):
@@ -415,7 +415,7 @@ class RelativeTimeInterval(BaseModel):
     """See section 8.5.2.18 in ISO 15118-2"""
 
     start: int = Field(..., ge=0, le=16777214, alias="start")
-    duration: int = Field(None, ge=0, le=86400, alias="duration")
+    duration: Optional[int] = Field(None, ge=0, le=86400, alias="duration")
 
 
 class PMaxScheduleEntry(BaseModel):
@@ -484,9 +484,9 @@ class SalesTariffEntry(BaseModel):
     """See section 8.5.2.17 in ISO 15118-2"""
 
     # XSD type unsignedByte with value range [0..255]
-    e_price_level: int = Field(None, ge=0, le=255, alias="EPriceLevel")
+    e_price_level: Optional[int] = Field(None, ge=0, le=255, alias="EPriceLevel")
     time_interval: RelativeTimeInterval = Field(..., alias="RelativeTimeInterval")
-    consumption_cost: List[ConsumptionCost] = Field(
+    consumption_cost: Optional[List[ConsumptionCost]] = Field(
         None, max_items=3, alias="ConsumptionCost"
     )
 
@@ -512,16 +512,16 @@ class SalesTariffEntry(BaseModel):
 class SalesTariff(BaseModel):
     """See section 8.5.2.16 in ISO 15118-2"""
 
-    id: str = Field(None, alias="Id")
+    id: Optional[str] = Field(None, alias="Id")
     # XSD type unsignedByte with value range [0 .. 255]
     # Table 77 says it's both of type SAIDType (which is unsignedByte) and
     # short, so we choose the smaller value range.
     sales_tariff_id: int = Field(..., ge=0, le=255, alias="SalesTariffID")
-    sales_tariff_description: str = Field(
+    sales_tariff_description: Optional[str] = Field(
         None, max_length=32, alias="SalesTariffDescription"
     )
     # XSD type unsignedByte with value range [0..255]
-    num_e_price_levels: int = Field(None, ge=0, le=255, alias="NumEPriceLevels")
+    num_e_price_levels: Optional[int] = Field(None, ge=0, le=255, alias="NumEPriceLevels")
     sales_tariff_entry: List[SalesTariffEntry] = Field(
         ..., max_items=102, alias="SalesTariffEntry"
     )
@@ -584,7 +584,7 @@ class SAScheduleTuple(BaseModel):
     # XSD type unsignedByte with value range [1..255]
     sa_schedule_tuple_id: int = Field(..., ge=1, le=255, alias="SAScheduleTupleID")
     p_max_schedule: PMaxSchedule = Field(..., alias="PMaxSchedule")
-    sales_tariff: SalesTariff = Field(None, alias="SalesTariff")
+    sales_tariff: Optional[SalesTariff] = Field(None, alias="SalesTariff")
 
 
 class SAScheduleList(BaseModel):

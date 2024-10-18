@@ -97,8 +97,8 @@ class AuthorizationReq(BodyBase):
 
     # 'Id' is actually an XML attribute, but JSON (our serialisation method)
     # doesn't have attributes. The EXI codec has to en-/decode accordingly.
-    id: str = Field(None, alias="Id")
-    gen_challenge: bytes = Field(
+    id: Optional[str] = Field(None, alias="Id")
+    gen_challenge: Optional[bytes] = Field(
         None, min_length=16, max_length=16, alias="GenChallenge"
     )
 
@@ -201,19 +201,20 @@ class CertificateUpdateRes(Response):
     emaid: EMAID = Field(..., alias="eMAID")
     # XSD type short (16 bit integer) with value range [-32768..32767].
     # But only -1 is allowed as negative value.
-    retry_counter: int = Field(None, ge=-1, le=32767, alias="RetryCounter")
+    retry_counter: Optional[int] = Field(None, ge=-1, le=32767, alias="RetryCounter")
 
 
 class ChargeParameterDiscoveryReq(BodyBase):
     """See section 8.4.3.8.2 in ISO 15118-2"""
 
     # XSD type unsignedShort (16 bit integer) with value range [0..65535]
-    max_entries_sa_schedule_tuple: int = Field(
+    max_entries_sa_schedule_tuple: Optional[int] = Field(
         None, ge=0, le=65535, alias="MaxEntriesSAScheduleTuple"
     )
     requested_energy_mode: EnergyTransferModeEnum = Field(
         ..., alias="RequestedEnergyTransferMode"
     )
+    # TODO: select ac or dc
     ac_ev_charge_parameter: ACEVChargeParameter = Field(
         None, alias="AC_EVChargeParameter"
     )
@@ -278,7 +279,8 @@ class ChargeParameterDiscoveryRes(Response):
     """See section 8.4.3.8.3 in ISO 15118-2"""
 
     evse_processing: EVSEProcessing = Field(..., alias="EVSEProcessing")
-    sa_schedule_list: SAScheduleList = Field(None, alias="SAScheduleList")
+    sa_schedule_list: Optional[SAScheduleList] = Field(None, alias="SAScheduleList")
+    # TODO: Select ac or dc, not both
     ac_charge_parameter: ACEVSEChargeParameter = Field(
         None, alias="AC_EVSEChargeParameter"
     )
@@ -339,9 +341,9 @@ class ChargingStatusRes(Response):
     evse_id: str = Field(..., min_length=7, max_length=37, alias="EVSEID")
     # XSD type unsignedByte with value range [1..255]
     sa_schedule_tuple_id: int = Field(..., ge=1, le=255, alias="SAScheduleTupleID")
-    evse_max_current: PVEVSEMaxCurrent = Field(None, alias="EVSEMaxCurrent")
-    meter_info: MeterInfo = Field(None, alias="MeterInfo")
-    receipt_required: bool = Field(None, alias="ReceiptRequired")
+    evse_max_current: Optional[PVEVSEMaxCurrent] = Field(None, alias="EVSEMaxCurrent")
+    meter_info: Optional[MeterInfo] = Field(None, alias="MeterInfo")
+    receipt_required: Optional[bool] = Field(None, alias="ReceiptRequired")
     ac_evse_status: ACEVSEStatus = Field(..., alias="AC_EVSEStatus")
 
 
@@ -350,19 +352,19 @@ class CurrentDemandReq(BodyBase):
 
     dc_ev_status: DCEVStatus = Field(..., alias="DC_EVStatus")
     ev_target_current: PVEVTargetCurrent = Field(..., alias="EVTargetCurrent")
-    ev_max_voltage_limit: PVEVMaxVoltageLimit = Field(
+    ev_max_voltage_limit: Optional[PVEVMaxVoltageLimit] = Field(
         None, alias="EVMaximumVoltageLimit"
     )
-    ev_max_current_limit: PVEVMaxCurrentLimit = Field(
+    ev_max_current_limit: Optional[PVEVMaxCurrentLimit] = Field(
         None, alias="EVMaximumCurrentLimit"
     )
-    ev_max_power_limit: PVEVMaxPowerLimit = Field(None, alias="EVMaximumPowerLimit")
-    bulk_charging_complete: bool = Field(None, alias="BulkChargingComplete")
+    ev_max_power_limit: Optional[PVEVMaxPowerLimit] = Field(None, alias="EVMaximumPowerLimit")
+    bulk_charging_complete: Optional[bool] = Field(None, alias="BulkChargingComplete")
     charging_complete: bool = Field(..., alias="ChargingComplete")
-    remaining_time_to_full_soc: PVRemainingTimeToFullSOC = Field(
+    remaining_time_to_full_soc: Optional[PVRemainingTimeToFullSOC] = Field(
         None, alias="RemainingTimeToFullSoC"
     )
-    remaining_time_to_bulk_soc: PVRemainingTimeToBulkSOC = Field(
+    remaining_time_to_bulk_soc: Optional[PVRemainingTimeToBulkSOC] = Field(
         None, alias="RemainingTimeToBulkSoC"
     )
     ev_target_voltage: PVEVTargetVoltage = Field(..., alias="EVTargetVoltage")
@@ -377,21 +379,21 @@ class CurrentDemandRes(Response):
     evse_current_limit_achieved: bool = Field(..., alias="EVSECurrentLimitAchieved")
     evse_voltage_limit_achieved: bool = Field(..., alias="EVSEVoltageLimitAchieved")
     evse_power_limit_achieved: bool = Field(..., alias="EVSEPowerLimitAchieved")
-    evse_max_voltage_limit: PVEVSEMaxVoltageLimit = Field(
+    evse_max_voltage_limit: Optional[PVEVSEMaxVoltageLimit] = Field(
         None, alias="EVSEMaximumVoltageLimit"
     )
-    evse_max_current_limit: PVEVSEMaxCurrentLimit = Field(
+    evse_max_current_limit: Optional[PVEVSEMaxCurrentLimit] = Field(
         None, alias="EVSEMaximumCurrentLimit"
     )
-    evse_max_power_limit: PVEVSEMaxPowerLimit = Field(
+    evse_max_power_limit: Optional[PVEVSEMaxPowerLimit] = Field(
         None, alias="EVSEMaximumPowerLimit"
     )
     # Note: Table 56 denotes the EVSEID type falsely as hexBinary
     evse_id: str = Field(..., min_length=7, max_length=37, alias="EVSEID")
     # XSD type unsignedByte with value range [1..255]
     sa_schedule_tuple_id: int = Field(..., ge=1, le=255, alias="SAScheduleTupleID")
-    meter_info: MeterInfo = Field(None, alias="MeterInfo")
-    receipt_required: bool = Field(None, alias="ReceiptRequired")
+    meter_info: Optional[MeterInfo] = Field(None, alias="MeterInfo")
+    receipt_required: Optional[bool] = Field(None, alias="ReceiptRequired")
 
 
 class MeteringReceiptReq(BodyBase):
@@ -399,11 +401,11 @@ class MeteringReceiptReq(BodyBase):
 
     # 'Id' is actually an XML attribute, but JSON (our serialisation method)
     # doesn't have attributes. The EXI codec has to en-/decode accordingly.
-    id: str = Field(None, alias="Id")
+    id: Optional[str ]= Field(None, alias="Id")
     # XSD type hexBinary with max 8 bytes encoded as 16 hexadecimal characters
     session_id: str = Field(..., max_length=16, alias="SessionID")
     # XSD type unsignedByte with value range [1..255]
-    sa_schedule_tuple_id: int = Field(None, ge=1, le=255, alias="SAScheduleTupleID")
+    sa_schedule_tuple_id: Optional[int] = Field(None, ge=1, le=255, alias="SAScheduleTupleID")
     meter_info: MeterInfo = Field(..., alias="MeterInfo")
 
     @validator("session_id")
@@ -431,6 +433,7 @@ class MeteringReceiptReq(BodyBase):
 class MeteringReceiptRes(Response):
     """See section 8.4.3.13.3 in ISO 15118-2"""
 
+    # TODO: select ac or dc
     ac_evse_status: ACEVSEStatus = Field(None, alias="AC_EVSEStatus")
     dc_evse_status: DCEVSEStatus = Field(None, alias="DC_EVSEStatus")
 
@@ -495,8 +498,8 @@ class PowerDeliveryReq(BodyBase):
     charge_progress: ChargeProgress = Field(..., alias="ChargeProgress")
     # XSD type unsignedByte with value range [1..255]
     sa_schedule_tuple_id: int = Field(..., ge=1, le=255, alias="SAScheduleTupleID")
-    charging_profile: ChargingProfile = Field(None, alias="ChargingProfile")
-    dc_ev_power_delivery_parameter: DCEVPowerDeliveryParameter = Field(
+    charging_profile: Optional[ChargingProfile] = Field(None, alias="ChargingProfile")
+    dc_ev_power_delivery_parameter: Optional[DCEVPowerDeliveryParameter] = Field(
         None, alias="DC_EVPowerDeliveryParameter"
     )
 
@@ -504,6 +507,7 @@ class PowerDeliveryReq(BodyBase):
 class PowerDeliveryRes(Response):
     """See section 8.4.3.9.3 in ISO 15118-2"""
 
+    # TODO select ac or dc
     ac_evse_status: ACEVSEStatus = Field(None, alias="AC_EVSEStatus")
     dc_evse_status: DCEVSEStatus = Field(None, alias="DC_EVSEStatus")
 
@@ -556,7 +560,7 @@ class ServiceDetailRes(Response):
 
     # XSD type unsignedShort (16 bit integer) with value range [0..65535]
     service_id: int = Field(..., ge=0, le=65535, alias="ServiceID")
-    service_parameter_list: ServiceParameterList = Field(
+    service_parameter_list: Optional[ServiceParameterList] = Field(
         None, alias="ServiceParameterList"
     )
 
@@ -564,8 +568,8 @@ class ServiceDetailRes(Response):
 class ServiceDiscoveryReq(BodyBase):
     """See section 8.4.3.3.2 in ISO 15118-2"""
 
-    service_scope: str = Field(None, max_length=64, alias="ServiceScope")
-    service_category: ServiceCategory = Field(None, alias="ServiceCategory")
+    service_scope: Optional[str] = Field(None, max_length=64, alias="ServiceScope")
+    service_category: Optional[ServiceCategory] = Field(None, alias="ServiceCategory")
 
 
 class ServiceDiscoveryRes(Response):
@@ -573,7 +577,7 @@ class ServiceDiscoveryRes(Response):
 
     auth_option_list: AuthOptionList = Field(..., alias="PaymentOptionList")
     charge_service: ChargeService = Field(..., alias="ChargeService")
-    service_list: ServiceList = Field(None, alias="ServiceList")
+    service_list: Optional[ServiceList] = Field(None, alias="ServiceList")
 
 
 class SessionSetupReq(BodyBase):
@@ -608,7 +612,7 @@ class SessionSetupRes(Response):
     """See section 8.4.3.2.2 in ISO 15118-2"""
 
     evse_id: str = Field(..., min_length=7, max_length=37, alias="EVSEID")
-    evse_timestamp: int = Field(None, alias="EVSETimeStamp")
+    evse_timestamp: Optional[int] = Field(None, alias="EVSETimeStamp")
 
 
 class SessionStopReq(BodyBase):
