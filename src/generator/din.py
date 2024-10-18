@@ -1,13 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright 2024 Pionix GmbH and Contributors to EVerest
+# Copyright 2024 SebaLukas
+
 import json
 from pathlib import Path
 import pandas as pd
-import secrets
 from builtins import Exception
 from progress.bar import Bar
 
 from exi_codec import CustomJSONEncoder, ExiJarCodec
+
+from generator.helper import get_random_bytes
 
 from config import output_dir
 
@@ -32,11 +34,6 @@ from iso15118.shared.messages.din_spec.msgdef import V2GMessage
 from iso15118.shared.messages.din_spec.header import MessageHeader
 
 from polyfactory.factories.pydantic_factory import ModelFactory
-
-
-def get_random_bytes(nbytes: int) -> bytes:
-    # TODO(SL): move to another file
-    return secrets.token_bytes(nbytes)
 
 
 class SessionSetupReqFactory(ModelFactory[SessionSetupReq]):

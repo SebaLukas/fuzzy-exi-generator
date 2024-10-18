@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (c) 2024 Contributors to EVerest
+# Copyright 2024 Pionix GmbH and Contributors to EVerest
 
 import logging
 from builtins import Exception
