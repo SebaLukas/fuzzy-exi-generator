@@ -76,7 +76,13 @@ The current generator status is described here, which messages can currently be 
 
 | Messages (Req & Res)     | Status             |
 |--------------------------|--------------------|
-|                          |                    |
+| SessionSetup             | :heavy_check_mark: |
+| ServiceDiscovery         | :heavy_check_mark: |
+| ServiceSelection         | :heavy_check_mark: |
+| SessionStop              | :heavy_check_mark: |
+| DCCableCheck             | :heavy_check_mark: |
+| DCPreCharge              | :heavy_check_mark: |
+| DCWeldingDetection       | :heavy_check_mark: |
 
 [1]: https://www.w3.org/TR/exi/
 
