@@ -10,6 +10,7 @@ from exi_codec import ExiJarCodec
 from generator.supported_app_protocol import GeneratorSupportedAppProtocol
 from generator.din import GeneratorDIN
 from generator.iso_2 import GeneratorIso2
+from generator.iso_20 import GeneratorIso20
 
 # FIXME(SL): Adding better logging
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +25,7 @@ if __name__ == '__main__':
     parser.add_argument('--number-sap-msgs', type=int, default=10)
     parser.add_argument('--number-din-msgs', type=int, default=50)
     parser.add_argument('--number-iso2-msgs', type=int, default=50)
+    parser.add_argument('--number-iso20-msgs', type=int, default=50)
 
     args = parser.parse_args()
 
@@ -32,3 +34,4 @@ if __name__ == '__main__':
     GeneratorSupportedAppProtocol().generate(args.number_sap_msgs)
     GeneratorDIN().generate(args.number_din_msgs)
     GeneratorIso2().generate(args.number_iso2_msgs)
+    GeneratorIso20().generate(args.number_iso20_msgs)
